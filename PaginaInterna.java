@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Pagina_Interna extends JFrame {
-    public Pagina_Interna() {
+public class PaginaInterna extends JFrame {
+    public PaginaInterna() {
         super("Pagina interna");
 
         //IMPOSTAZIONI INIZIALI

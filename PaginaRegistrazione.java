@@ -4,12 +4,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Pagina_Login extends JFrame {
-
+public class PaginaRegistrazione extends JFrame {
     LoginDataPersister loginDataPersister = new LoginDataPersister();
 
     //LABELS
-    JLabel titoloBluLbl = new JLabel("Login", SwingConstants.LEFT);
+    JLabel titoloBluLbl = new JLabel("Sign-in", SwingConstants.LEFT);
     JLabel idAgenziaLbl = new JLabel("Id Agenzia", SwingConstants.LEFT);
     JLabel cognomeLbl = new JLabel("Nome Utente", SwingConstants.LEFT);
     JLabel passwordLbl = new JLabel("Password", SwingConstants.LEFT);
@@ -26,12 +25,12 @@ public class Pagina_Login extends JFrame {
     Font f3 = new Font("Liberation Sans", Font.PLAIN, 15);
 
     //BUTTONS
-    JButton pulsanteLogin = new JButton("ACCEDI");
-    JButton pulsanteRichiediPass = new JButton("Richiedi Password");
-    JButton pulsanteRegistrati = new JButton("Registrati");
+    JButton pulsanteRichiediPass = new JButton("Suggerisci Password");
+    JButton pulsanteRegistrati = new JButton("REGISTRATI");
+    JButton pulsanteLogin = new JButton("Login");
 
-    public Pagina_Login() {
-        super("Finestra Accesso");
+    public PaginaRegistrazione() {
+        super("Finestra Registrazione");
 
         //IMPOSTAZIONI INIZIALI
         setSize(400, 400);
@@ -40,14 +39,14 @@ public class Pagina_Login extends JFrame {
         setResizable(false);
         setVisible(true);
 
-        //DEFINZIONE PANNELLO 1
+        //DEFINZIONE PANNELLO
         JPanel pannelloLogin = new JPanel();
         pannelloLogin.setLayout(new GridLayout(11, 1));
         pannelloLogin.setBorder(BorderFactory.createEmptyBorder(20, 60, 0, 60));
 
-        pulsanteLogin.addActionListener(new clickBottone());
         pulsanteRichiediPass.addActionListener(new clickBottone());
         pulsanteRegistrati.addActionListener(new clickBottone());
+        pulsanteLogin.addActionListener(new clickBottone());
 
         titoloBluLbl.setFont(f1);
         titoloBluLbl.setForeground(Color.black);
@@ -72,10 +71,10 @@ public class Pagina_Login extends JFrame {
         pannelloLogin.add(passwordLbl);
         pannelloLogin.add(passwordTextBox);
         pannelloLogin.add(new JLabel(""));
-        pulsanteLogin.setPreferredSize(new Dimension(40, 160));
-        pulsanteLogin.setBackground(Color.blue);
-        pulsanteLogin.setForeground(Color.white);
-        pannelloLogin.add(pulsanteLogin);
+        pulsanteRegistrati.setPreferredSize(new Dimension(160, 40));
+        pulsanteRegistrati.setBackground(Color.blue);
+        pulsanteRegistrati.setForeground(Color.white);
+        pannelloLogin.add(pulsanteRegistrati);
         pannelloLogin.setBackground(Color.lightGray);
 
         //DEFINIZIONE PANNELLO 2
@@ -88,10 +87,10 @@ public class Pagina_Login extends JFrame {
         pulsanteRichiediPass.setForeground(Color.white);
         pannelloExtra.add(pulsanteRichiediPass);
 
-        pulsanteRegistrati.setPreferredSize(new Dimension(160, 40));
-        pulsanteRegistrati.setBackground(Color.blue);
-        pulsanteRegistrati.setForeground(Color.white);
-        pannelloExtra.add(pulsanteRegistrati);
+        pulsanteLogin.setPreferredSize(new Dimension(160, 40));
+        pulsanteLogin.setBackground(Color.blue);
+        pulsanteLogin.setForeground(Color.white);
+        pannelloExtra.add(pulsanteLogin);
         pannelloExtra.add(err);
         pannelloExtra.setSize(new Dimension(400, 30));
         pannelloExtra.setBackground(Color.gray);
@@ -102,44 +101,45 @@ public class Pagina_Login extends JFrame {
         pannelloPadre.setDividerLocation(350);
         setContentPane(pannelloPadre);
         setMinimumSize(new Dimension(400, 500));
-
+        setContentPane(pannelloPadre);
     }
 
     private class clickBottone implements ActionListener {
         public void actionPerformed(ActionEvent evento) {
-            if (evento.getActionCommand().equals("ACCEDI")) {
+            if (evento.getActionCommand().equals("REGISTRATI")) {
                 if (idAgenziaTextBox.getText().equals("") || passwordTextBox.getText().equals("") || nomeTextBox.getText().equals("")) {
-                    JOptionPane.showMessageDialog(null, "ERRORE: IMPOSSIBILE ACCEDERE");
+                    JOptionPane.showMessageDialog(null, "ERRORE: CAMPI OBBLIGATORI MANCANTI");
                     err.setFont(f3);
                     err.setForeground(Color.red);
                     err.setText("ERRORE");
                 } else {
-                    LoginData ld = null;
+                    LoginData ld = new LoginData();
+                    ld.idAgenzia = idAgenziaTextBox.getText();
+                    ld.username = nomeTextBox.getText();
+                    ld.password = passwordTextBox.getText();
                     try {
-                        ld = loginDataPersister.retrieveLoginData();
-                    } catch (IOException e) {
-                        System.out.println("err");
-                        e.printStackTrace();
-                    }
-                    if (ld != null && ld.checkLogin(idAgenziaTextBox.getText(), nomeTextBox.getText(), passwordTextBox.getText())) {
+                        loginDataPersister.saveLoginData(ld, false);
                         JOptionPane.showMessageDialog(null, "BENVENUTO");
                         setVisible(false);
                         dispose();
-                        Pagina_Interna p = new Pagina_Interna();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "ERRORE: IMPOSSIBILE ACCEDERE");
+                        PaginaInterna p = new PaginaInterna();
+                    } catch (IOException e) {
+                        System.out.println("Impossibile salvare dati di persistenza.");
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "ERRORE: Impossibile salvare i dati di persistenza.");
                         err.setFont(f3);
                         err.setForeground(Color.red);
                         err.setText("ERRORE");
                     }
                 }
-            } else if (evento.getActionCommand().equals("Richiedi Password")) {
-                JOptionPane.showMessageDialog(null, "NUOVA PASSWORD: 883BCYW");
+            } else if (evento.getActionCommand().equals("Suggerisci Password")) {
+                String passConsigliata = new LoginData().setRandomPassword(8);
+                passwordTextBox.setText(passConsigliata);
+                JOptionPane.showMessageDialog(null, "PASSWORD CONSIGLIATA: " + passConsigliata);
             } else {
-                //JOptionPane.showMessageDialog(null, "IN ARRIVO PROSSIMAMENTE");
                 setVisible(false);
                 dispose();
-                Pagina_Registrazione p = new Pagina_Registrazione();
+                PaginaLogin p = new PaginaLogin();
             }
         }
     }

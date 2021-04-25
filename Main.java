@@ -5,15 +5,15 @@ public class Main {
     public static void main(String args[]) {
         LoginDataPersister loginDataPersister = new LoginDataPersister();
         LoginData loginData = new LoginData();
-        loginData.idAgenzia = "1";
-        loginData.username = "1";
-        loginData.password = "1";
+        loginData.idAgenzia = "admin";
+        loginData.username = "admin";
+        loginData.password = "admin";
         try {
             loginDataPersister.saveLoginData(loginData, true);
         } catch (IOException e) {
             System.out.println("Impossibile salvare i dati.");
         }
-        new Pagina_Login();
+        new PaginaLogin();
     }
 
 }
