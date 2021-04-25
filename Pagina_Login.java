@@ -121,7 +121,7 @@ public class Pagina_Login extends JFrame {
                         System.out.println("err");
                         e.printStackTrace();
                     }
-                    if (ld != null && ld.checkLogin(idAgenziaTextBox.getText(), passwordTextBox.getText(), nomeTextBox.getText())) {
+                    if (ld != null && ld.checkLogin(idAgenziaTextBox.getText(), nomeTextBox.getText(), passwordTextBox.getText())) {
                         JOptionPane.showMessageDialog(null, "BENVENUTO");
                         setVisible(false);
                         dispose();

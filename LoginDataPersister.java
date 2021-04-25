@@ -8,15 +8,32 @@ public class LoginDataPersister {
 
     private String persistenceDataPath = "persistenza.txt";
 
-    public void saveLoginData(LoginData ld) throws IOException {
+    public void saveLoginData(LoginData ld, boolean checkIfExists) throws IOException {
         Properties p = new Properties();
         p.setProperty("idAgenzia", ld.idAgenzia);
         p.setProperty("username", ld.username);
         p.setProperty("password", ld.password);
 
-        FileWriter fw = new FileWriter(persistenceDataPath);
-        p.store(fw, "Utente Memorizzato");
-        fw.close();
+        File f = new File(persistenceDataPath);
+        if(checkIfExists){
+            if(f.exists() && !f.isDirectory()){
+                System.out.println("File già presente.");
+            }else{
+                //delete old persistence file
+                f.delete();
+                //write new persistence file
+                FileWriter fw = new FileWriter(persistenceDataPath);
+                p.store(fw, "Utente Memorizzato");
+                fw.close();
+            }
+        }else{
+            //delete old persistence file
+            f.delete();
+            //write new persistence file
+            FileWriter fw = new FileWriter(persistenceDataPath);
+            p.store(fw, "Utente Memorizzato");
+            fw.close();
+        }
     }
 
     public LoginData retrieveLoginData() throws IOException {
@@ -36,8 +53,6 @@ public class LoginDataPersister {
     public void changePassword(String newPassword) throws IOException {
         LoginData tld = retrieveLoginData();
         tld.password = newPassword;
-        File f = new File(persistenceDataPath);
-        f.delete();
-        saveLoginData(tld);
+        saveLoginData(tld, false);
     }
 }

@@ -2,8 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class Pagina_Registrazione extends JFrame {
+    LoginDataPersister loginDataPersister = new LoginDataPersister();
+
     //LABELS
     JLabel titoloBluLbl = new JLabel("Sign-in", SwingConstants.LEFT);
     JLabel idAgenziaLbl = new JLabel("Id Agenzia", SwingConstants.LEFT);
@@ -110,10 +113,24 @@ public class Pagina_Registrazione extends JFrame {
                     err.setForeground(Color.red);
                     err.setText("ERRORE");
                 } else {
-                    JOptionPane.showMessageDialog(null, "BENVENUTO");
-                    setVisible(false);
-                    dispose();
-                    Pagina_Interna p = new Pagina_Interna();
+                    LoginData ld = new LoginData();
+                    ld.idAgenzia = idAgenziaTextBox.getText();
+                    ld.username = nomeTextBox.getText();
+                    ld.password = passwordTextBox.getText();
+                    try {
+                        loginDataPersister.saveLoginData(ld, false);
+                        JOptionPane.showMessageDialog(null, "BENVENUTO");
+                        setVisible(false);
+                        dispose();
+                        Pagina_Interna p = new Pagina_Interna();
+                    } catch (IOException e) {
+                        System.out.println("Impossibile salvare dati di persistenza.");
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "ERRORE: Impossibile salvare i dati di persistenza.");
+                        err.setFont(f3);
+                        err.setForeground(Color.red);
+                        err.setText("ERRORE");
+                    }
                 }
             } else if (evento.getActionCommand().equals("Suggerisci Password")) {
                 JOptionPane.showMessageDialog(null, "PASSWORD CONSIGLIATA: C7B9FB74");

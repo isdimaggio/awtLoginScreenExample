@@ -9,7 +9,7 @@ public class Main {
         loginData.username = "1";
         loginData.password = "1";
         try {
-            loginDataPersister.saveLoginData(loginData);
+            loginDataPersister.saveLoginData(loginData, true);
         } catch (IOException e) {
             System.out.println("Impossibile salvare i dati.");
         }
