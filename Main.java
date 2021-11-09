@@ -11,7 +11,7 @@ public class Main {
         try {
             loginDataPersister.saveLoginData(loginData, true);
         } catch (IOException e) {
-            System.out.println("Impossibile salvare i dati.");
+            System.out.println("Errore salvataggio dati!");
         }
         new PaginaLogin();
     }
